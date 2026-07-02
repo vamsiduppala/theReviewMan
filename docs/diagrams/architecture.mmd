@@ -1,0 +1,16 @@
+flowchart LR
+    U[Client / CLI] -->|PR URL| API["FastAPI /review"]
+    API --> G
+    subgraph G[LangGraph Agent]
+        direction LR
+        F[fetch_pr] --> C[chunk_diff]
+        C --> A[analyze_chunks]
+        A --> S[security_pass]
+        S --> AG[aggregate + dedupe]
+        AG --> V[verdict]
+        V --> O[format_output]
+    end
+    F -.-> GH[(GitHub REST API)]
+    A -.-> LLM[(Claude API)]
+    S -.-> LLM
+    O --> R["Structured Review — findings · verdict · trace"]
